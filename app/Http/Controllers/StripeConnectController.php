@@ -39,7 +39,6 @@ class StripeConnectController extends Controller
                         'country' => 'US',
                         'type'    => 'express',
                         'capabilities' => [
-                            'card_payments' => ['requested' => true],
                             'transfers' => ['requested' => true],
                         ],
                         'email'   => $seller->email,
@@ -92,6 +91,7 @@ class StripeConnectController extends Controller
             // dd($request->all());
             $request->validate([
                 'stripeToken' => 'required',
+                'amount'      => 'required|numeric|min:1',
             ]);
 
             $seller = auth()->user();
@@ -106,14 +106,14 @@ class StripeConnectController extends Controller
             }
 
 
-            $amount = 1000;
+            $amount = $request->amount * 100;
 
             // Purchase Item
             $charge = $this->stripeClient->charges->create([
                 'amount'      => $amount,
                 'currency'    => 'usd',
                 'source'      => $request->stripeToken,
-                'description' => 'Test Charge',
+                'description' => 'Test Charge for stripe connect',
             ]);
 
             $admin_percentage = ($amount * 15) / 100;
@@ -125,7 +125,7 @@ class StripeConnectController extends Controller
                 'currency'           => 'usd',
                 'source_transaction' => $charge->id,
                 'destination'        => $seller->stripe_connect_id,
-                'description'        => 'Test Transfer',
+                'description'        => 'Test Transfer to seller connect account',
             ]);
 
             return redirect()->route('home')->with('success', 'Payment Successful & Amount transferred to seller account!');

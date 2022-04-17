@@ -11,6 +11,9 @@
                         <form action="{{ route('store-payment') }}" method="post" id="payment-form">
                             @csrf
 
+                            <input type="number" min="1" name="amount" value="{{ old('amount', 100) }}" class="form-control mb-3"
+                                   placeholder="Enter amount">
+
                             <input id="card-holder-name" name="name" type="text" class="form-control"
                                    placeholder="Enter card holder name"
                                    value="{{ auth()->user()->name ?? old('name') }}">
@@ -23,7 +26,8 @@
                             <div class="form-actions">
                                 <button type="submit" id="card-button" ; const
                                         clientSecret=cardButton.dataset.secret;data-secret="{{ config('stripe.secret') }}"
-                                        class="btn btn-primary btn-lg float-end mt-3"><span class="mr-2">Pay Now</button>
+                                        class="btn btn-primary btn-lg float-end mt-3"><span class="mr-2">Pay Now
+                                </button>
                             </div>
                         </form>
                     </div>
